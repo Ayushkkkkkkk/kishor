@@ -2,6 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role: "USER" | "ADMIN";
 }
 
 export interface Movie {
@@ -24,4 +25,11 @@ export interface RatingAverageResponse {
   totalRatedMovies: number;
   overallAverage: number;
   averageByGenre: Record<string, number>;
+}
+
+export interface AdminStats {
+  users: number;
+  movies: number;
+  watchlistItems: number;
+  ratings: number;
 }

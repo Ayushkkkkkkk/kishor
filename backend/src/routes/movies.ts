@@ -6,8 +6,22 @@ const router = Router();
 
 router.get(
   "/",
-  asyncHandler(async (_req, res) => {
+  asyncHandler(async (req, res) => {
+    const genre = typeof req.query.genre === "string" ? req.query.genre.trim() : "";
+    const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+
     const movies = await prisma.movie.findMany({
+      where: {
+        ...(genre ? { genre } : {}),
+        ...(search
+          ? {
+              OR: [
+                { title: { contains: search } },
+                { description: { contains: search } },
+              ],
+            }
+          : {}),
+      },
       orderBy: { title: "asc" },
     });
     res.json(movies);

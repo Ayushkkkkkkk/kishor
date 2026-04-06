@@ -20,10 +20,20 @@ export function NavBar() {
         <Link className={location.pathname === "/suggestions" ? "active" : ""} to="/suggestions">
           Suggestions
         </Link>
+        {user.role === "ADMIN" && (
+          <Link className={location.pathname === "/admin" ? "active" : ""} to="/admin">
+            Admin Panel
+          </Link>
+        )}
       </nav>
-      <button className="btn secondary" onClick={logout}>
-        Logout
-      </button>
+      <div className="navbar-actions">
+        <span className="user-chip">
+          {user.name} ({user.role})
+        </span>
+        <button className="btn secondary" onClick={logout}>
+          Logout
+        </button>
+      </div>
     </header>
   );
 }

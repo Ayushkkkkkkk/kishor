@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserRole } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -83,7 +84,26 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("Seed complete: movies added.");
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@movieapp.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+  await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: {
+      name: "Admin",
+      password: hashedPassword,
+      role: UserRole.ADMIN,
+    },
+    create: {
+      name: "Admin",
+      email: adminEmail,
+      password: hashedPassword,
+      role: UserRole.ADMIN,
+    },
+  });
+
+  console.log(`Seed complete: movies added, admin ready (${adminEmail}).`);
 }
 
 main()

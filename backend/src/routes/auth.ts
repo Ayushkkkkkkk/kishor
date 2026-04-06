@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
+import { UserRole } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { asyncHandler, AppError } from "../utils/http.js";
@@ -18,7 +19,7 @@ const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-function signToken(payload: { id: number; email: string }) {
+function signToken(payload: { id: number; email: string; role: UserRole }) {
   return jwt.sign(payload, process.env.JWT_SECRET || "change-this-secret", {
     expiresIn: "7d",
   });
@@ -42,14 +43,15 @@ router.post(
         name: data.name,
         email: data.email,
         password: hashedPassword,
+        role: UserRole.USER,
       },
     });
 
-    const token = signToken({ id: user.id, email: user.email });
+    const token = signToken({ id: user.id, email: user.email, role: user.role });
 
     res.status(201).json({
       token,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
     });
   }),
 );
@@ -71,11 +73,11 @@ router.post(
       throw new AppError("Invalid email or password", 401);
     }
 
-    const token = signToken({ id: user.id, email: user.email });
+    const token = signToken({ id: user.id, email: user.email, role: user.role });
 
     res.json({
       token,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
     });
   }),
 );

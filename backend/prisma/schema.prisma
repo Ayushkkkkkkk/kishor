@@ -12,6 +12,7 @@ model User {
   name      String
   email     String     @unique
   password  String
+  role      UserRole   @default(USER)
   createdAt DateTime   @default(now())
   watchlist Watchlist[]
   ratings   Rating[]
@@ -59,4 +60,9 @@ model Rating {
 enum WatchlistStatus {
   TO_WATCH
   WATCHED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

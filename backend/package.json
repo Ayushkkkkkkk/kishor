@@ -9,7 +9,10 @@
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:push": "prisma db push",
+    "demo:setup": "cp -n env.example .env || true && npm run prisma:generate && npm run prisma:push && npm run prisma:seed",
+    "demo": "npm run demo:setup && npm run dev"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",

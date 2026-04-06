@@ -32,6 +32,11 @@ export function LoginPage() {
     <div className="center-page">
       <form className="card auth-card" onSubmit={onSubmit}>
         <h2>{isRegister ? "Register" : "Login"}</h2>
+        {!isRegister && (
+          <p className="muted">
+            Admin login (after seeding): admin@movieapp.com / admin123
+          </p>
+        )}
 
         {isRegister && (
           <input

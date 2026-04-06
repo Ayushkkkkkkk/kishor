@@ -4,11 +4,23 @@ import type { Movie } from "../types";
 
 export function MoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("");
   const [message, setMessage] = useState("");
 
+  async function loadMovies() {
+    const response = await api.get("/movies", {
+      params: {
+        ...(search ? { search } : {}),
+        ...(genre ? { genre } : {}),
+      },
+    });
+    setMovies(response.data);
+  }
+
   useEffect(() => {
-    api.get("/movies").then((response) => setMovies(response.data));
-  }, []);
+    loadMovies();
+  }, [search, genre]);
 
   async function addToWatchlist(movieId: number) {
     setMessage("");
@@ -23,6 +35,22 @@ export function MoviesPage() {
   return (
     <div className="page">
       <h2>Browse Movies</h2>
+      <section className="filters">
+        <input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search by title or description"
+        />
+        <select value={genre} onChange={(event) => setGenre(event.target.value)}>
+          <option value="">All genres</option>
+          <option value="Action">Action</option>
+          <option value="Comedy">Comedy</option>
+          <option value="Drama">Drama</option>
+          <option value="Horror">Horror</option>
+          <option value="Romance">Romance</option>
+          <option value="Sci-Fi">Sci-Fi</option>
+        </select>
+      </section>
       {message && <p className="info">{message}</p>}
       <div className="grid">
         {movies.map((movie) => (

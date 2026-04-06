@@ -8,6 +8,7 @@ import movieRoutes from "./routes/movies.js";
 import watchlistRoutes from "./routes/watchlist.js";
 import ratingRoutes from "./routes/ratings.js";
 import suggestionRoutes from "./routes/suggestions.js";
+import adminRoutes from "./routes/admin.js";
 import { AppError } from "./utils/http.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -26,6 +27,7 @@ app.use("/api/movies", movieRoutes);
 app.use("/api/watchlist", watchlistRoutes);
 app.use("/api/ratings", ratingRoutes);
 app.use("/api/suggestions", suggestionRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use((error: unknown, _req: Request, _res: Response, next: NextFunction) => {
   if (error instanceof ZodError) {

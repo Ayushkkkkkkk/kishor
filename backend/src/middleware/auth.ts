@@ -5,6 +5,7 @@ import { AppError } from "../utils/http.js";
 interface JwtPayload {
   id: number;
   email: string;
+  role: "USER" | "ADMIN";
 }
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction) {
@@ -26,10 +27,21 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
     req.user = {
       id: decoded.id,
       email: decoded.email,
+      role: decoded.role,
     };
 
     return next();
   } catch {
     return next(new AppError("Invalid token", 401));
   }
+}
+
+export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
+  if (!req.user) {
+    return next(new AppError("Unauthorized", 401));
+  }
+  if (req.user.role !== "ADMIN") {
+    return next(new AppError("Admin access required", 403));
+  }
+  return next();
 }
